@@ -1,9 +1,10 @@
-# %% Libraries
-from sklearn.svm import LinearSVC
+# %% Libraries import
 import pandas as pd
-import pickle
-from os import walk
+import numpy as np
 import configparser
+import math
+import os
+from os import walk
 
 
 
