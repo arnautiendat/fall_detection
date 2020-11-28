@@ -282,7 +282,7 @@ def compute_trial_file(trial_file_name, window_size):
    # del df_Features
     del df_Features_2
     
-    return max_N, max_N_index, min_N, min_N_index, df_Mediciones_file
+    return max_N, max_N_index, min_N, min_N_index
 
 
 """______________________________________________________________ 
@@ -294,12 +294,8 @@ from datetime import timedelta
 
 start_time = time.time()
 
-
 file_list = df_Files_Trials[["File"]]
 total_num_iter = len(file_list)
-
-
-
 
 # We iterate over the file_list we extracted by scanning the directories and subdirectories  
 for window_size in [1.5,2,3]:  
@@ -307,6 +303,7 @@ for window_size in [1.5,2,3]:
     try:
         # Delete the file before creating a new one
         os.remove(unified_directory + 'Unified_Fallup_' + str(window_size) + 's.txt')
+        print("File removed")
     except:
         print("No files to remove")
         
@@ -323,7 +320,7 @@ for window_size in [1.5,2,3]:
             continue
             
         print("PROCESSING TRIAL FILE: " + row['File'])
-        max_N, max_N_index, min_N, min_N_index, df = compute_trial_file(my_data_file_name, window_size)
+        max_N, max_N_index, min_N, min_N_index = compute_trial_file(my_data_file_name, window_size)
       
         elapsed_time_secs = time.time() - iter_start_time
         msg = "Iteration took: %s secs" % timedelta(seconds=round(elapsed_time_secs))
