@@ -39,24 +39,12 @@ config.read('config.ini')
 
 # Directories where data is stored with init file
 fallup_directory = config['paths_fallup']['fallup_directory']
-eng_feat_directory = config['paths_root']['eng_feat_directory']
-generated_datasets_directory = config['paths_root']['generated_datasets_directory']
-
-file_names = []
-dir_names = []
-
-# Recursively scan the directory and sub-directory for filenames...
-for (dirpath, dirnames, filenames) in walk(generated_datasets_directory):
-    file_names.extend(filenames)
+unified_directory = config['paths_root']['unified_directory']
 
 
+# %% Create unified dataframe
 
-# Create a dataframe and load filenames into the File column
-df_Files_Trials = pd.DataFrame({"File": file_names})
-
-# %%
-
-colnames = ["kk",'File', 'Fall_ADL', 'Act_Type', 'var_X', 'mean_X',
+colnames = [" ",'File', 'Fall_ADL', 'Act_Type', 'var_X', 'mean_X',
        'std_X', 'max_X', 'min_X', 'range_X', 'kurtosis_X',
        'skewness_X', 'var_Y', 'mean_Y', 'std_Y', 'max_Y',
        'min_Y', 'range_Y', 'kurtosis_Y', 'skewness_Y', 'var_Z',
@@ -71,56 +59,59 @@ colnames = ["kk",'File', 'Fall_ADL', 'Act_Type', 'var_X', 'mean_X',
        'skewness_N_VER', 'corr_XY', 'corr_XZ', 'corr_YZ', 'corr_NV',
        'corr_NH', 'corr_HV']
 
-# We work with the prepared file Unified_ADL_Falls, which is based on the previous dataset
-my_data_file_name = eng_feat_directory + "Unified_Fallup.txt"
+fallup = {}
+pinetime = {}
+uma = {}
+df_ADL_Falls = {}
+for ws in ["1.5","2","3"]:
+    # We work with the prepared file Unified_Fallup which is based on the previous dataset
+    my_data_file_name = unified_directory + "Unified_Fallup_" + ws + "s.txt"
+    
+    # Create a Dataframe from the file with the engineered features previously created
+    fallup[ws + "s"] = pd.DataFrame(pd.read_csv(my_data_file_name, sep = ',',names = colnames, header = None))
+  
+    fallup[ws + "s"].drop(" ", axis=1, inplace=True)
 
-# Create a Dataframe from the file with the engineered features previously created
-fallup_data = pd.DataFrame(pd.read_csv(my_data_file_name, sep = ',',names = colnames, header = None))
+    # We load the data created by us
+    my_data_file_name = unified_directory + "Unified_PineTime_" + ws + "s.txt"
+    
+    # Create a Dataframe from the file with the engineered features previously created
+    pinetime[ws + "s"] = pd.DataFrame(pd.read_csv(my_data_file_name, sep = ',', names = colnames, header = None))
+    
+    pinetime[ws + "s"].drop(" ", axis=1, inplace=True)
 
-fallup_data.drop("kk", axis=1, inplace=True)
-
-
-# We load the data created by us
-my_data_file_name = eng_feat_directory + "Unified_Real_Data.txt"
-
-
-# Create a Dataframe from the file with the engineered features previously created
-real_data = pd.DataFrame(pd.read_csv(my_data_file_name, sep = ',', names = colnames, header = None))
-
-real_data.drop("kk", axis=1, inplace=True)
-
-# We load UMA dataset
-
-# We load the data created by us
-my_data_file_name = eng_feat_directory + "Unified_UMA.txt"
-
-# Create a Dataframe from the file with the engineered features previously created
-uma_data = pd.DataFrame(pd.read_csv(my_data_file_name, sep = ',', names = colnames, header = None))
-
-uma_data.drop("kk", axis=1, inplace=True)
+    # We load UMA dataset
+    
+    # We load the data created by us
+    my_data_file_name = unified_directory + "Unified_UMA_" + ws + "s.txt"
+    
+    # Create a Dataframe from the file with the engineered features previously created
+    uma[ws + "s"] = pd.DataFrame(pd.read_csv(my_data_file_name, sep = ',', names = colnames, header = None))
+    
+    uma[ws + "s"].drop(" ", axis=1, inplace=True)
 
 # We load ITA dataset
 
 # We load the data created by us
-my_data_file_name = eng_feat_directory + "Unified_Ita.txt"
+#my_data_file_name = unified_directory + "Unified_Ita.txt"
 
 # Create a Dataframe from the file with the engineered features previously created
-ita_data = pd.DataFrame(pd.read_csv(my_data_file_name, sep = ',', names = colnames, header = None))
+#ita_data = pd.DataFrame(pd.read_csv(my_data_file_name, sep = ',', names = colnames, header = None))
 
-ita_data.drop("kk", axis=1, inplace=True)
+#ita_data.drop(" ", axis=1, inplace=True)
 
 # We load UCI dataset
 
 # We load the data created by us
-my_data_file_name = eng_feat_directory + "Unified_Uci.txt"
+#my_data_file_name = unified_directory + "Unified_Uci.txt"
 
 # Create a Dataframe from the file with the engineered features previously created
-uci_data = pd.DataFrame(pd.read_csv(my_data_file_name, sep = ',', names = colnames, header = None))
+#uci_data = pd.DataFrame(pd.read_csv(my_data_file_name, sep = ',', names = colnames, header = None))
 
-uci_data.drop("kk", axis=1, inplace=True)
+#uci_data.drop(" ", axis=1, inplace=True)
 
 # Concatenate fallup data and real data with uma
-df_ADL_Falls = pd.concat([fallup_data,real_data,uma_data,uci_data])
+df_ADL_Falls = pd.concat([fallup[ws + "s"],pinetime[ws + "s"],uma[ws + "s"]])
 
 # Separate falls dataframe from daily activites
 df_only_ADLs = df_ADL_Falls[df_ADL_Falls.Fall_ADL == "D"]
@@ -432,3 +423,12 @@ print("svc_Accuracy = "+ str(svc_Accuracy))
 
 X_test['predicted_class'] = predictions
 X_test['class'] = y_test
+
+#%%
+fallup = {}
+for ws in ["1.5","2","3"]:
+    # We work with the prepared file Unified_Fallup which is based on the previous dataset
+    my_data_file_name = unified_directory + "Unified_Fallup_" + ws + "s.txt"
+    
+    # Create a Dataframe from the file with the engineered features previously created
+    fallup[ws + "s"] = pd.DataFrame(pd.read_csv(my_data_file_name, sep = ',',names = colnames, header = None))
