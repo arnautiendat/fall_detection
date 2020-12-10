@@ -1,6 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+Created on Wed Dec  9 15:40:25 2020
+
+@author: arnautienda
+"""
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
 Created on Tue Sep 15 12:11:14 2020
 
 @author: arnautienda
@@ -48,10 +55,6 @@ config.read('config.ini')
 
 # Directories where data is stored with init file
 unified_directory = config['paths_root']['unified_directory']
-
-# %% Load files
-
-##### Select window size for the study ######
 
 #window_size = "1.5"
 #window_size = "2"
@@ -137,10 +140,6 @@ ax = sns.countplot(x="Fall_ADL", data=df_ADL_Falls)
 for p in ax.patches:
     ax.annotate(format(p.get_height(), '.0f'), (p.get_x() + p.get_width() / 2., p.get_height()), ha = 'center', va = 'center', xytext = (0, 10), textcoords = 'offset points')
     
-
-
-
-
 a = df_ADL_Falls.isnull()
 plt.figure(figsize=(7,5))
 sns.heatmap(a,yticklabels=False)
@@ -296,7 +295,7 @@ clf_rf=RandomForestClassifier(n_estimators = best_n_estimators, max_depth = best
 #Train the model using the training sets y_pred=clf.predict(X_test)
 clf_rf.fit(X_train,y_train)
 
-with open('RFT.pkl', 'wb') as RFT:
+with open('RFT_model.pkl', 'wb') as RFT:
     pickle.dump(clf_rf, RFT)
 
 predictions_rf=clf_rf.predict(X_test)
