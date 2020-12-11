@@ -106,16 +106,6 @@ uma_data = pd.DataFrame(pd.read_csv(my_data_file_name, sep = ',', names = colnam
 
 uma_data.drop("na", axis=1, inplace=True)
 
-# We load ITA dataset
-
-# We load the data created by us
-#my_data_file_name = unified_directory + "Unified_Ita.txt"
-
-# Create a Dataframe from the file with the engineered features previously created
-#ita_data = pd.DataFrame(pd.read_csv(my_data_file_name, sep = ',', names = colnames, header = None))
-
-#ita_data.drop("kk", axis=1, inplace=True)
-
 # We load UCI dataset
 
 # We load the data created by us
@@ -145,15 +135,12 @@ for p in ax.patches:
     ax.annotate(format(p.get_height(), '.0f'), (p.get_x() + p.get_width() / 2., p.get_height()), ha = 'center', va = 'center', xytext = (0, 10), textcoords = 'offset points')
     
 
-
-
-
 a = df_ADL_Falls.isnull()
 plt.figure(figsize=(7,5))
 sns.heatmap(a,yticklabels=False)
 
 
-l = df_ADL_Falls.iloc[:,3:].columns.values
+l = df_ADL_Falls.iloc[:,3:7].columns.values
 number_of_columns=6
 number_of_rows = 9
 plt.figure(figsize=(number_of_columns*4,5*number_of_rows))
@@ -203,20 +190,8 @@ x_columns = ['kurtosis_X','max_X','mean_X','min_X','range_X','skewness_X','std_X
              'kurtosis_N_VER','max_N_VER','mean_N_VER','min_N_VER','range_N_VER','skewness_N_VER','std_N_VER','var_N_VER',
              'corr_HV','corr_NH','corr_NV','corr_XY','corr_XZ','corr_YZ']
 
-# Features simplified
-
-
-x_columns_simple = ['max_X','mean_X','min_X','range_X','std_X','var_X',
-					'max_Y','mean_Y','min_Y','range_Y','std_Y','var_Y',
-					'max_Z','mean_Z','min_Z','range_Z','std_Z','var_Z',
-					'max_N_XYZ','mean_N_XYZ','min_N_XYZ','range_N_XYZ','std_N_XYZ','var_N_XYZ'
-					]
-
 X_train = X_train[x_columns]
 X_test = X_test[x_columns] 
-
-
-
 
 # Train normalization
 x = X_train.values #returns a numpy array
@@ -454,10 +429,10 @@ for pred, mod in zip(predictions,models):
     # calculations of measurements of performance
     
     n_TP = cm[0,0]
-    n_FP = cm[1,0]
+    n_FP = cm[0,1]
     n_TN = cm[1,1]
-    n_FN = cm[0,1]
-    
+    n_FN = cm[1,0]
+
     # SENSITIVITY = TP / (TP + FN)
     Sensitivity = n_TP / (n_TP + n_FN)
     print("Sensitivity = "+ str(Sensitivity))
@@ -481,7 +456,7 @@ for pred, mod in zip(predictions,models):
     #fig.suptitle('Confusion matrix with ' + window_size + 's window size', fontsize=14)
     fig.suptitle('Matriz de confusión con ventana de ' + window_size + 's', fontsize=14)
 
-    models_scores[window_size + "s"].append(model_score)
+  #  models_scores[window_size + "s"].append(model_score)
     ax.flatten()[i].set_title(mod)
     g = sns.heatmap(cm_norm, annot=True, ax = ax.flatten()[i],
                 xticklabels = ["F","D"],
