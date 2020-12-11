@@ -56,10 +56,6 @@ config.read('config.ini')
 # Directories where data is stored with init file
 unified_directory = config['paths_root']['unified_directory']
 
-# %% Load files
-
-##### Select window size for the study ######
-
 #window_size = "1.5"
 #window_size = "2"
 window_size = "3"
@@ -133,7 +129,6 @@ plt.figure(figsize=(7, 7))
 ax = sns.countplot(x="Fall_ADL", data=df_ADL_Falls)
 for p in ax.patches:
     ax.annotate(format(p.get_height(), '.0f'), (p.get_x() + p.get_width() / 2., p.get_height()), ha = 'center', va = 'center', xytext = (0, 10), textcoords = 'offset points')
-    
 
 a = df_ADL_Falls.isnull()
 plt.figure(figsize=(7,5))
